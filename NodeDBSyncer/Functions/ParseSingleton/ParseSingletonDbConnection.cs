@@ -152,7 +152,7 @@ WHERE cc.mods IN (
 
 AND cc.analysis IS NOT NULL
 AND cc.id>@start
-AND cc.id<@start + 1000000
+AND cc.id<@start + 20000000
 
 ORDER BY cc.id
 LIMIT @limit
@@ -164,7 +164,7 @@ LIMIT @limit
                 new("start",last_coin_class_id),
                 new("limit", number),
             },
-            CommandTimeout = 600,
+            CommandTimeout = 1200,
         };
         await using var reader = await cmd.ExecuteReaderAsync();
 
