@@ -25,6 +25,9 @@ stages:
   jobs:
   - job: Build
     steps:
+    - checkout: self
+      submodules: true
+
     - task: DotNetCoreCLI@2
       displayName: Restore
       inputs:
