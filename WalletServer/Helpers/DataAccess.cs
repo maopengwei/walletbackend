@@ -208,6 +208,44 @@ public class DataAccess : IDisposable
         return rows;
     }
 
+    public async Task<CoinPuzzleInfo[]> GetParentPuzzle(string[] coinIds)
+    {
+        using var cmd = new NpgsqlCommand(
+            $"SELECT cc.coin_name, cc.puzzle, cr.amount, cr.coin_parent FROM sync_coin_class cc"
+            + $" JOIN sync_coin_record cr ON cr.coin_name = cc.coin_name"
+            + SqlLastIndexLateral
+            + $" WHERE cc.coin_name = ANY(@coin_name)"
+            + SqlIndexConstraint
+            , connection)
+        {
+            Parameters =
+            {
+                new("coin_name", coinIds.Select(_=> HexMate.Convert.FromHexString(_.Unprefix0x().AsSpan())).ToArray()),
+            }
+        };
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        var dt = new DataTable();
+        dt.Load(reader);
+        var rows = dt.Rows
+            .OfType<DataRow>()
+            .Select(_ => new
+            {
+                amount = _["amount"] as long?,
+                parent = _["coin_parent"] as byte[],
+                name = _["coin_name"] as byte[],
+                puzzle = _["puzzle"] as byte[],
+            })
+            .Select(_ => (_.amount == null || _.parent == null || _.puzzle == null) ? null : new CoinPuzzleInfo(
+                _.name.ToHexWithPrefix0x(),
+                Convert.ToUInt64(_.amount),
+                _.parent.ToHexWithPrefix0x(),
+                _.puzzle.Decompress().ToHexWithPrefix0x()))
+            .WhereNotNull()
+            .ToArray();
+
+        return rows;
+    }
 
     public async Task<long> GetPeakHeight()
     {
@@ -429,5 +467,7 @@ public record CoinDetail
      string? PuzzleReveal,
      string? Solution
 );
+
+public record CoinPuzzleInfo(string CoinName, ulong Amount, string ParentCoinName, string PuzzleReveal);
 
 public record CoinAnalysis(string CoinName, string Analysis);

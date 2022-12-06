@@ -223,19 +223,26 @@ namespace WalletServer.Controllers
             var remoteIpAddress = this.HttpContext.GetRealIp();
             this.logger.LogDebug($"[{DateTime.UtcNow.ToShortTimeString()}]From {remoteIpAddress} request puzzle {request.parentCoinId}");
 
-            //var parentCoin = await this.client.GetCoinRecordByName(request.parentCoinId);
-            var parentCoin = await RetryAsync(_ => this.client.GetCoinRecordByName(request.parentCoinId));
-            if (!parentCoin.Spent) return BadRequest("Coin not spend yet.");
+            var coins = await dataAccess.GetParentPuzzle(new[] { request.parentCoinId });
+            if (coins.Length != 1) return BadRequest("Cannot find corresponding coin.");
+            var c = coins.Single();
 
-            //var spend = await this.client.GetPuzzleAndSolution(request.parentCoinId, parentCoin.SpentBlockIndex);
+            return Ok(new GetParentPuzzleResponse(request.parentCoinId, c.Amount, c.ParentCoinName, c.PuzzleReveal));
+        }
+
+        private async Task<GetParentPuzzleResponse?> GetParentPuzzleByApi(GetParentPuzzleRequest request)
+        {
+            var parentCoin = await RetryAsync(_ => this.client.GetCoinRecordByName(request.parentCoinId));
+            if (!parentCoin.Spent) throw new BadHttpRequestException("Coin not spend yet.");
+
             var spend = await RetryAsync(_ => this.client.GetPuzzleAndSolution(request.parentCoinId, parentCoin.SpentBlockIndex));
             if (string.IsNullOrEmpty(spend.PuzzleReveal))
             {
                 this.logger.LogWarning($"failed to get puzzle for {parentCoin.Coin.ParentCoinInfo} on {parentCoin.ConfirmedBlockIndex}");
-                return BadRequest("Failed to get coin.");
+                throw new BadHttpRequestException("Failed to get coin.");
             }
 
-            return Ok(new GetParentPuzzleResponse(request.parentCoinId, parentCoin.Coin.Amount, parentCoin.Coin.ParentCoinInfo, spend.PuzzleReveal));
+            return new GetParentPuzzleResponse(request.parentCoinId, parentCoin.Coin.Amount, parentCoin.Coin.ParentCoinInfo, spend.PuzzleReveal);
         }
 
         public record GetCoinSolutionRequest(
