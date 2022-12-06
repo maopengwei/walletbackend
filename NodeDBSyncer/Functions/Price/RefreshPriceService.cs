@@ -29,17 +29,24 @@ internal class RefreshPriceService : BaseRefreshService
     protected override async Task DoWorkAsync(CancellationToken token)
     {
         var ps = this.appSettings.PriceSource?.ToLower();
-        var prices = ps == "ftx"
-            ? GetFtftxPrices().ToArray()
-            : GetCoinBasePrices().ToArray();
+        try
+        {
+            var prices = ps == "ftx"
+                ? GetFtftxPrices().ToArray()
+                : GetCoinBasePrices().ToArray();
 
-        if (token.IsCancellationRequested)
-        {
-            this.logger.LogInformation($"Refresh work cancelled.");
+            if (token.IsCancellationRequested)
+            {
+                this.logger.LogInformation($"Refresh work cancelled.");
+            }
+            else
+            {
+                await this.persistentHelper.PersistentPrice(prices.ToArray());
+            }
         }
-        else
+        catch (WebException wex)
         {
-            await this.persistentHelper.PersistentPrice(prices.ToArray());
+            this.logger.LogWarning($"Failed to refresh price using source [{ps}], due to {wex.Message}.");
         }
     }
 
