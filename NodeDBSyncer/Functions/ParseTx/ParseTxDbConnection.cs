@@ -210,6 +210,7 @@ WHERE id in
                 new("limit", number),
             }
         };
+        cmd.CommandTimeout = 1000;
         await using var reader = await cmd.ExecuteReaderAsync();
 
         var list = await ReadTxs(reader);
