@@ -47,12 +47,14 @@ namespace WalletServer.Controllers
             var ne = await this.nameService.QueryNames(request.queries.Select(_ => _.name).ToArray());
             var answers = request.queries
                 .Select(_ => new { q = _, a = ne.FirstOrDefault(n => _.name == n.name) })
-                .Where(_ => _.q.type == nameof(NameEntity.address))
+                .Where(_ => _.q.type == nameof(NameEntity.address) || (_.a?.bindings.ContainsKey(_.q.type) ?? false))
                 .Select(_ => _.a is null ? null : new StandardResolveAnswer(
                     _.q.name,
                     _.q.type,
                     600,
-                    _.a.address,
+                    _.q.type == nameof(NameEntity.address)
+                        ? _.a.address
+                        : _.a.bindings[_.q.type],
                     _.a.last_change_coin_name,
                     _.a.last_change_spent_index,
                     _.a.nft_coin_name))

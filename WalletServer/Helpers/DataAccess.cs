@@ -2,6 +2,7 @@
 using chia.dotnet;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NodeDBSyncer.Helpers;
 using Npgsql;
 using Prometheus;
@@ -260,8 +261,9 @@ SELECT
     sr.singleton_coin_name AS nft_coin_name,
     sh.this_coin_name AS last_change_coin_name,
     sh.this_coin_spent_index AS last_change_spent_index,
-    cc.analysis->'metadata'->>'name' AS name,
-    cc.analysis->'metadata'->>'address' AS address
+    (CASE WHEN (cc.analysis->>'cnsName' != '') THEN cc.analysis->>'cnsName' ELSE cc.analysis->'metadata'->>'name' END) AS name,
+    (CASE WHEN (cc.analysis->>'cnsAddress' != '') THEN cc.analysis->>'cnsAddress' ELSE cc.analysis->'metadata'->>'address' END) AS address,
+    cc.analysis->>'cnsBindings' AS bindings
 FROM ext_singleton_record sr
 LEFT JOIN ext_singleton_history sh ON sr.singleton_coin_name = sh.singleton_coin_name
 LEFT JOIN sync_coin_record c ON sh.next_coin_name=c.coin_name
@@ -286,7 +288,8 @@ AND sr.type='nft_v1';", connection)
                 (_[nameof(NameEntity.last_change_coin_name)] as byte[]).ToHexWithPrefix0x(),
                 (int)_[nameof(NameEntity.last_change_spent_index)],
                 (_[nameof(NameEntity.name)] as string ?? "").ToLower(),
-                _[nameof(NameEntity.address)] as string ?? ""))
+                _[nameof(NameEntity.address)] as string ?? "",
+                ParseBindings(_[nameof(NameEntity.bindings)] as string ?? "")))
             .ToArray();
 
         return rows;
@@ -324,6 +327,22 @@ AND sr.type='nft_v1';", connection)
             .ToArray();
 
         return rows;
+    }
+
+    private Dictionary<string, string> ParseBindings(string bindingString)
+    {
+        if (string.IsNullOrEmpty(bindingString)) return new Dictionary<string, string>();
+        try
+        {
+            var jobj = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+            if (jobj == null) return new Dictionary<string, string>();
+            return jobj;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning($"cannot parse bindings [{ex.Message}]: {bindingString}");
+            return new Dictionary<string, string>();
+        }
     }
 
     private string[] GetTypeStringArrayByType(CoinClassType type)
@@ -399,7 +418,8 @@ public record NameEntity(
     string last_change_coin_name,
     int last_change_spent_index,
     string name,
-    string address);
+    string address,
+    Dictionary<string, string> bindings);
 
 public record CoinDetail
 (
