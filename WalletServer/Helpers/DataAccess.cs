@@ -211,8 +211,8 @@ public class DataAccess : IDisposable
     public async Task<CoinPuzzleInfo[]> GetParentPuzzle(string[] coinIds)
     {
         using var cmd = new NpgsqlCommand(
-            $"SELECT cc.coin_name, cc.puzzle, cr.amount, cr.coin_parent FROM sync_coin_class cc"
-            + $" JOIN sync_coin_record cr ON cr.coin_name = cc.coin_name"
+            $"SELECT cc.coin_name, cc.puzzle, c.amount, c.coin_parent FROM sync_coin_class cc"
+            + $" JOIN sync_coin_record c ON c.coin_name = cc.coin_name"
             + SqlLastIndexLateral
             + $" WHERE cc.coin_name = ANY(@coin_name)"
             + SqlIndexConstraint
