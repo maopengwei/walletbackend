@@ -264,7 +264,7 @@ namespace WalletServer.Controllers
             RequestCoinSolutionCount.Inc();
 
             var remoteIpAddress = this.HttpContext.GetRealIp();
-            this.logger.LogInformation($"[{DateTime.UtcNow.ToShortTimeString()}]From {remoteIpAddress} request puzzle[debug] {request.coinId}");
+            this.logger.LogDebug($"[{DateTime.UtcNow.ToShortTimeString()}]From {remoteIpAddress} request coin solution {request.coinId}");
 
 
             var coins = await dataAccess.GetCoinDetails(coinIds);
