@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+ChatServer/
+ChiaInfoRetriever/
+*.sln
+Dockerfile
+docker-compose.yml
