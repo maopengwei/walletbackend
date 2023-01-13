@@ -13,8 +13,7 @@ on:
     branches: [ "main" ]
 
 # Environment variables available to all jobs and steps in this workflow
-env:
-  abc: abc
+
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
@@ -41,7 +40,7 @@ jobs:
       with:
         registry: ghcr.io
         username: maopengwei
-        password: ${{ env.GHCR_TOKEN }}
+        password: echo "${{ env.GHCR_TOKEN }}"
     
     # tag
     - name: tag
