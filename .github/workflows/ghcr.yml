@@ -14,7 +14,6 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  CR_PAT: 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
   GHCR_USERNAME: maopengwei
   GHCR_TOKEN: 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
 
@@ -40,8 +39,8 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: $GHCR_USERNAME
-        password: $GHCR_TOKEN
+        username: ${{ env.GHCR_USERNAME }}
+        password: ${{ env.GHCR_TOKEN }}
     
     # tag
     - name: tag
