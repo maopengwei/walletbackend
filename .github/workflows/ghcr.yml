@@ -22,7 +22,7 @@ env:
   IMAGE_NAME: iks-test
   IKS_CLUSTER: example-iks-cluster-name-or-id
   DEPLOYMENT_NAME: iks-test
-  CR_PAT: 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jobs
+  CR_PAT: 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
   PORT: 5001
 
 jobs:
