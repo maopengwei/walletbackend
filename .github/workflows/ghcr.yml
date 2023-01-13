@@ -14,16 +14,7 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  GITHUB_SHA: ${{ github.sha }}
-  IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
-  IBM_CLOUD_REGION: us-south
-  ICR_NAMESPACE: ${{ secrets.ICR_NAMESPACE }}
-  REGISTRY_HOSTNAME: us.icr.io
-  IMAGE_NAME: iks-test
-  IKS_CLUSTER: example-iks-cluster-name-or-id
-  DEPLOYMENT_NAME: iks-test
-  CR_PAT: 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
-  PORT: 5001
+  CR_PAT: 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
 
 jobs:
   setup-build-publish-deploy:
@@ -45,7 +36,7 @@ jobs:
     # Authenticate with ghcr.io
     - name: Authenticate with ghcr.io
       run: |
-        echo "${CR_PAT}" | sudo docker login ghcr.io -u maopengwei --password-stdin
+        echo "${{ CR_PAT }}" | sudo docker login ghcr.io -u maopengwei --password-stdin
     
     # tag
     - name: tag
