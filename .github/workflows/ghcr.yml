@@ -30,7 +30,10 @@ jobs:
         registry: ghcr.io
         username: maopengwei
         password: ${{ secrets.GITHUB_TOKEN }}
-    
+    # build
+    - name: build
+      run: |
+        bash build-docker.sh
     # tag
     - name: tag
       run: |
