@@ -30,6 +30,7 @@ jobs:
         registry: ghcr.io
         username: maopengwei
         password: ${{ secrets.GITHUB_TOKEN }}
+        permissions: packages: read|write
     # build
     - name: build
       run: |
@@ -41,7 +42,7 @@ jobs:
         docker tag pawket_syncer ghcr.io/maopengwei/pawket_syncer:latest
     
     # push the Docker image to ghcr
-    - name: Build with Docker
+    - name: Push image to ghcr
       run: |
         sudo docker push ghcr.io/maopengwei/pawket_api:latest
         sudo docker push ghcr.io/maopengwei/pawket_syncer:latest
