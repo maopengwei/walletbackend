@@ -12,6 +12,8 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     environment: production
+    permissions: 
+        packages: write
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -25,8 +27,6 @@ jobs:
     
     # Login to ghcr.io
     - name: Login to GHCR
-      permissions: 
-        packages: write
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
