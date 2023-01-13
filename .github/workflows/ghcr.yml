@@ -36,7 +36,7 @@ jobs:
     # Authenticate with ghcr.io
     - name: Authenticate with ghcr.io
       run: |
-        echo "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" | sudo docker login ghcr.io -u maopengwei --password-stdin
+        echo $CR_PAT | sudo docker login ghcr.io -u maopengwei --password-stdin
     
     # tag
     - name: tag
