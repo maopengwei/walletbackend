@@ -18,7 +18,7 @@ jobs:
     # Set Value
     - name: set value
       run: |
-        echo "GHCR_TOKEN=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" >> $GITHUB_ENV
+        echo "GHCR_TOKEN=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" >> $GITHUB_ENV
 
     # Get chia-dotnet   
     - name: Get chia-dotnet
