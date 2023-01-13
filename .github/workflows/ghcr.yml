@@ -40,8 +40,8 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: maopengwei
-        password: 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
+        username: $GHCR_USERNAME
+        password: $GHCR_TOKEN
     
     # tag
     - name: tag
