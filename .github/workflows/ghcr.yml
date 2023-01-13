@@ -15,10 +15,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    # Set Value
-    - name: set value
-      run: |
-        echo "GHCR_TOKEN=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" >> $GITHUB_ENV
 
     # Get chia-dotnet   
     - name: Get chia-dotnet
@@ -33,7 +29,7 @@ jobs:
       with:
         registry: ghcr.io
         username: maopengwei
-        password: ${{ env.GHCR_TOKEN }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     
     # tag
     - name: tag
