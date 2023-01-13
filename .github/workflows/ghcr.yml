@@ -15,7 +15,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   GHCR_USERNAME: maopengwei
-  GHCR_TOKEN: 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
+  GHCR_TOKEN: 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
 
 jobs:
   setup-build-publish-deploy:
