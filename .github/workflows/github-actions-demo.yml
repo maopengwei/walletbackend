@@ -5,4 +5,4 @@ run:
   docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} ghcr.io
   cd walletbackend
   docker build  --file Dockerfile --tag ghcr.io/maopenweis/api:v1.0
-  dockerr push ghcr.io/maopenweeis/api:v1.0
+  docker push ghcr.io/maopenweeis/api:v1.0
