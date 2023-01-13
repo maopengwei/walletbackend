@@ -38,16 +38,10 @@ jobs:
     - name: tag
       run: |
         docker tag pawket_api ghcr.io/maopengwei/pawket_api:latest
-        docker tag pawket_processer ghcr.io/maopengwei/pawket_processer:latest
+        docker tag pawket_syncer ghcr.io/maopengwei/pawket_syncer:latest
     
-    # Build the Docker image
+    # push the Docker image to ghcr
     - name: Build with Docker
       run: |
         sudo docker push ghcr.io/maopengwei/pawket_api:latest
         sudo docker push ghcr.io/maopengwei/pawket_syncer:latest
-    
-    # Push the image to ghcr.io
-    - name: Push the image to ghcr
-      run: |
-        docker pull ghcr.io/maopengwei/pawket_api:latest
-        docker pull ghcr.io/maopengwei/pawket_syncer:latest
