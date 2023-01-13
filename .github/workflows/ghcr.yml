@@ -30,7 +30,8 @@ jobs:
         registry: ghcr.io
         username: maopengwei
         password: ${{ secrets.GITHUB_TOKEN }}
-        permissions: packages: read|write
+        permissions: 
+          packages: write
     # build
     - name: build
       run: |
