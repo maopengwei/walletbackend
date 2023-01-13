@@ -14,8 +14,6 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  GHCR_USERNAME: maopengwei
-  GHCR_TOKEN: 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
 
 jobs:
   setup-build-publish-deploy:
@@ -23,9 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-
     - name: Checkout
       uses: actions/checkout@v3
+    # Set Value
+    - name: set value
+      run: |
+        echo "GHCR_TOKEN=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" >> $GITHUB_ENV
 
     # Get chia-dotnet   
     - name: Get chia-dotnet
@@ -39,7 +40,7 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: ${{ env.GHCR_USERNAME }}
+        username: maopengwei
         password: ${{ env.GHCR_TOKEN }}
     
     # tag
