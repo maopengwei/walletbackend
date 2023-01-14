@@ -33,7 +33,7 @@ jobs:
       with:
         registry: ghcr.io
         username: maopengwei
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ env.GHCR_TOKEN }}
         
     # build
     - name: build
