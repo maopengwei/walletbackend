@@ -38,7 +38,7 @@ jobs:
         docker tag ${{ env.syncer_image }} ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.syncer_image }}
     
     - name: Login
-      uses: docker/login-action@v3
+      uses: docker/login-action@v2
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
