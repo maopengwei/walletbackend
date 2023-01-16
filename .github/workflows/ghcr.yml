@@ -1,5 +1,5 @@
 
-name: Build and Deploy to IKS
+name: Build and Deploy to GHCR
 
 on:
   push:
@@ -11,37 +11,27 @@ jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
-    environment: github-pages
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-
-    # Get chia-dotnet   
+      uses: actions/checkout@v2
     - name: Get chia-dotnet
       run: |
         git clone --depth=1 -b chore_retry https://github.com/Chiabee/chia-dotnet.git
         rm -rf chia-dotnet/.git
         rm -rf ChatServer
-    
-    # Login to ghcr.io
     - name: Login to GHCR
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
         username: maopengwei
         password: ${{ secrets.GITHUB_TOKEN }}   
-    # build
     - name: build
       run: |
        bash build-docker.sh
-       
-    # tag
     - name: tag
       run: |
         docker tag pawket_api ghcr.io/maopengwei/pawket_api:latest
         docker tag pawket_syncer ghcr.io/maopengwei/pawket_syncer:latest
-    
-    # push the Docker image to ghcr
     - name: Push image to ghcr
       run: |
         sudo docker push ghcr.io/maopengwei/pawket_api:latest
