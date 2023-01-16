@@ -24,15 +24,15 @@ jobs:
        bash build-docker.sh
     - name: tag
       run: |
-        docker tag pawket_api ghcr.io/maopengwei/pawket_api:latest
-        docker tag pawket_syncer ghcr.io/maopengwei/pawket_syncer:latest
+        docker tag pawket_api ghcr.io/${{ github.actor }}/pawket_api:latest
+        docker tag pawket_syncer ghcr.io/${{ github.actor }}/pawket_syncer:latest
     - name: Login to GHCR
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: maopengwei
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}   
     - name: Push image to ghcr
       run: |
-        sudo docker push ghcr.io/maopengwei/pawket_api:latest
-        sudo docker push ghcr.io/maopengwei/pawket_syncer:latest
+        sudo docker push ghcr.io/${{ github.actor }}/pawket_api:latest
+        sudo docker push ghcr.io/${{ github.actor }}/pawket_syncer:latest
