@@ -30,11 +30,13 @@ jobs:
         registry: ghcr.io
         username: maopengwei
         password: ${{ secrets.GHCR_TOKEN }}
-        
+    - uses: actions/checkout@v2      
     # build
     - name: build
       run: |
-        bash build-docker.sh
+       docker build --target api -t pawket_api:latest .
+       docker build --target syncer -t pawket_syncer:latest .
+       
     # tag
     - name: tag
       run: |
