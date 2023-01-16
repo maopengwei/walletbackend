@@ -19,12 +19,6 @@ jobs:
         git clone --depth=1 -b chore_retry https://github.com/Chiabee/chia-dotnet.git
         rm -rf chia-dotnet/.git
         rm -rf ChatServer
-    - name: Login to GHCR
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: maopengwei
-        password: ${{ secrets.GITHUB_TOKEN }}   
     - name: build
       run: |
        bash build-docker.sh
@@ -32,6 +26,12 @@ jobs:
       run: |
         docker tag pawket_api ghcr.io/maopengwei/pawket_api:latest
         docker tag pawket_syncer ghcr.io/maopengwei/pawket_syncer:latest
+    - name: Login to GHCR
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: maopengwei
+        password: ${{ secrets.GITHUB_TOKEN }}   
     - name: Push image to ghcr
       run: |
         sudo docker push ghcr.io/maopengwei/pawket_api:latest
