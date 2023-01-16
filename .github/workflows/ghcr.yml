@@ -34,8 +34,7 @@ jobs:
     # build
     - name: build
       run: |
-       docker build --target api -t pawket_api:latest .
-       docker build --target syncer -t pawket_syncer:latest .
+       bash build-docker.sh
        
     # tag
     - name: tag
