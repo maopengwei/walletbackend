@@ -4,6 +4,10 @@ name: Build and Deploy to GHCR
 on:
   push:
     branches: [ "main" ]
+env:
+  REGISTRY: ghcr.io
+  api_image: pawket_api
+  syncer_image: pawket_syncer
 
 # Environment variables available to all jobs and steps in this workflow
 
@@ -16,26 +20,31 @@ jobs:
       packages: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
     - name: Get chia-dotnet
       run: |
         git clone --depth=1 -b chore_retry https://github.com/Chiabee/chia-dotnet.git
         rm -rf chia-dotnet/.git
         rm -rf ChatServer
+
     - name: build
       run: |
        bash build-docker.sh
+
     - name: tag
       run: |
-        docker tag pawket_api ghcr.io/${{ github.actor }}/pawket_api
-        docker tag pawket_syncer ghcr.io/${{ github.actor }}/pawket_syncer
-    - name: Login to GHCR
-      uses: docker/login-action@v2
+        docker tag ${{ env.api_image }} ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.api_image }}
+        docker tag ${{ env.syncer_image }} ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.syncer_image }}
+    
+    - name: Login
+      uses: docker/login-action@v3
       with:
-        registry: ghcr.io
+        registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}   
-    - name: Push image to ghcr
+    
+    - name: Pus image to ghcr
       run: |
-        sudo docker push ghcr.io/${{ github.actor }}/pawket_api
-        sudo docker push ghcr.io/${{ github.actor }}/pawket_syncer
+        sudo docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.api_image }}
+        sudo docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.syncer_image }}
